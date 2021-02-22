@@ -1,23 +1,148 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import DropDown from "./components/DropDown";
+import Searchbar from "./components/Searchbar";
+import Table from "./components/Table";
+import EditableCell from "./components/EditableCell";
+// import columns from "./data";
+import { useMutation } from "react-query";
+import Columns from "./components/Columns";
 
 function App() {
+  const [rowdata, setRowData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [skipPageReset, setSkipPageReset] = useState(false);
+  const [hiddenElements, setHiddenElements] = useState(true);
+
+  useEffect(() => {
+    setSkipPageReset(false);
+  }, [rowdata]);
+
+  const onItemClick = (e) => {
+    console.log("e", e);
+    if (e === "all") {
+      setFilteredData(rowdata);
+    } else {
+      const result = rowdata.filter((item) => item.gender === e);
+      setFilteredData(result);
+    }
+  };
+
+  const onSearchbarChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "") {
+      setFilteredData(rowdata);
+    } else {
+      if (filteredData.length > 0) {
+        const result = filteredData.filter((item) => item.email === value);
+
+        setFilteredData(result);
+      } else {
+        const result = rowdata.filter((item) => item.email === value);
+
+        setFilteredData(result);
+      }
+    }
+  };
+
+  const onAddRowClick = () => {
+    setRowData(
+      rowdata.concat({ username: "", email: "", gender: "", phone: "" })
+    );
+  };
+
+
+
+  const columns = [
+    {
+      Header: "Name",
+      accessor: "username",
+      Cell: EditableCell,
+    },
+    {
+      Header: "Email",
+      accessor: "email",
+      Cell: EditableCell,
+    },
+    {
+      Header: "Gender",
+      accessor: "gender",
+      Cell: ({
+        value: initialValue,
+        row: { index },
+        column: { id },
+        updateMyData,
+      }) => {
+        const onItemClick = (value) => {
+          console.log("value", value);
+          updateMyData(index, id, value);
+        };
+
+        return (
+          <DropDown
+            options={[
+              { label: "Male", value: "male" },
+              { label: "Female", value: "female" },
+            ]}
+            title={"Select Gender"}
+            selectedValue={initialValue}
+            onItemClick={onItemClick}
+          />
+        );
+      },
+    },
+    {
+      Header: "Phone",
+      accessor: "phone",
+      Cell: EditableCell,
+    },
+  ];
+
+  columns.push({
+    Header: "salam",
+    accessor: "salam",
+    Cell: EditableCell,
+  })
+
+  const updateMyData = (rowIndex, columnId, value) => {
+    // We also turn on the flag to not reset the page
+    setSkipPageReset(true);
+    setRowData((old) =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          };
+        }
+        return row;
+      })
+    );
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mx-auto">
+      <div className="flex justify-center mt-8">
+        <Searchbar onChange={onSearchbarChange} />
+      </div>
+      <Columns style={{textAlign:'center'}}/>
+      <button hidden={hiddenElements}
+        onClick={onAddRowClick}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Add Row
+      </button>
+      <div className="flex justify-center mt-8" >
+        {
+          (!hiddenElements ? (<Table
+            columns={columns}
+            data={filteredData.length > 0 ? filteredData : rowdata}
+            updateMyData={updateMyData}
+            skipPageReset={skipPageReset}
+          />) : null)
+        }
+
+      </div>
+
     </div>
   );
 }
