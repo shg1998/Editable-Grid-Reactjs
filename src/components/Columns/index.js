@@ -2,16 +2,32 @@ import React, { useState } from 'react'
 
 const Columns = () => {
     const [colCount, setColCount] = useState("");
-    const [colName, setColName] = useState([]);
-    const [isGenerate, setIsGenerate] = useState(false);
+
+
+
+    const salam = () => {
+        var indents = [];
+        var n = parseInt(colCount);
+        for (var i = 1; i <= n; i++) {
+            indents.push(<input type="text" className={"form-control"} style={{ margin: '2rem' }}
+                placeholder={`Enter Column ${i} th Title`} aria-label="" aria-describedby="basic-addon1" />);
+        }
+        return (
+            <div>
+                {indents}
+                <button className={"btn btn-success btn-block"} style={{margin:'2rem'}}>Generate</button>
+            </div>
+        );
+    }
+
 
     const generateColsHandler = () => {
-        console.log(colCount);
-        for (let i = 0; i < colCount; i++) {
-            setColName("0");
-        }
+
         setIsGenerate(true);
+        salam();
     };
+    const [isGenerate, setIsGenerate] = useState(false);
+
 
     return (
         <>
@@ -24,8 +40,10 @@ const Columns = () => {
             </div>
             {
                 (isGenerate ? (<div>
-                    salam
-                </div>) : null)
+                    {
+                        salam()
+                    }
+                </div>) : (null))
             }
         </>
     )

@@ -3,18 +3,26 @@ import DropDown from "./components/DropDown";
 import Searchbar from "./components/Searchbar";
 import Table from "./components/Table";
 import EditableCell from "./components/EditableCell";
-// import columns from "./data";
-import { useMutation } from "react-query";
 import Columns from "./components/Columns";
+// import columns from "./data";
+
+
+
+
+
+
 
 function App() {
+
   const [rowdata, setRowData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [skipPageReset, setSkipPageReset] = useState(false);
   const [hiddenElements, setHiddenElements] = useState(true);
+ 
 
   useEffect(() => {
     setSkipPageReset(false);
+    
   }, [rowdata]);
 
   const onItemClick = (e) => {
@@ -123,14 +131,17 @@ function App() {
   return (
     <div className="container mx-auto">
       <div className="flex justify-center mt-8">
-        <Searchbar onChange={onSearchbarChange} />
+        {
+          (!hiddenElements ? (<Searchbar onChange={onSearchbarChange} />) : null)
+        }
       </div>
-      <Columns style={{textAlign:'center'}}/>
+      <Columns style={{ textAlign: 'center' }} />
       <button hidden={hiddenElements}
         onClick={onAddRowClick}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Add Row
       </button>
+      
       <div className="flex justify-center mt-8" >
         {
           (!hiddenElements ? (<Table
