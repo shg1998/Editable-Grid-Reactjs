@@ -1,21 +1,34 @@
 import React, { useState } from 'react'
 
-const Columns = () => {
+const Columns = (props) => {
     const [colCount, setColCount] = useState("");
+    
+    const [isGenerate, setIsGenerate] = useState(false);
+    
+    var datas =[];
 
-
+    const CreateTableHandler =()=>{
+        var n = parseInt(colCount);
+        for (let i =1 ; i <= n; i++) {
+            datas.push(document.getElementById(i.toString()).value);
+        }
+        props.setColumns(datas);
+        props.colHidden(false);
+        
+        console.log(datas);
+    }
 
     const salam = () => {
         var indents = [];
         var n = parseInt(colCount);
         for (var i = 1; i <= n; i++) {
-            indents.push(<input type="text" className={"form-control"} style={{ margin: '2rem' }}
+            indents.push(<input type="text" className={"form-control"} style={{ margin: '2rem' }} id={i}
                 placeholder={`Enter Column ${i} th Title`} aria-label="" aria-describedby="basic-addon1" />);
         }
         return (
             <div>
                 {indents}
-                <button className={"btn btn-success btn-block"} style={{margin:'2rem'}}>Generate</button>
+                <button className={"btn btn-success btn-block"} style={{margin:'2rem'}} onClick={CreateTableHandler} >Generate</button>
             </div>
         );
     }
@@ -26,7 +39,7 @@ const Columns = () => {
         setIsGenerate(true);
         salam();
     };
-    const [isGenerate, setIsGenerate] = useState(false);
+    
 
 
     return (

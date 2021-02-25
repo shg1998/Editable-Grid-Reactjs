@@ -18,6 +18,7 @@ function App() {
   const [filteredData, setFilteredData] = useState([]);
   const [skipPageReset, setSkipPageReset] = useState(false);
   const [hiddenElements, setHiddenElements] = useState(true);
+  const [colNames, setColNames] = useState([]);
  
 
   useEffect(() => {
@@ -62,55 +63,58 @@ function App() {
 
 
   const columns = [
-    {
-      Header: "Name",
-      accessor: "username",
-      Cell: EditableCell,
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-      Cell: EditableCell,
-    },
-    {
-      Header: "Gender",
-      accessor: "gender",
-      Cell: ({
-        value: initialValue,
-        row: { index },
-        column: { id },
-        updateMyData,
-      }) => {
-        const onItemClick = (value) => {
-          console.log("value", value);
-          updateMyData(index, id, value);
-        };
+    // {
+    //   Header: "Name",
+    //   accessor: "username",
+    //   Cell: EditableCell,
+    // },
+    // {
+    //   Header: "Email",
+    //   accessor: "email",
+    //   Cell: EditableCell,
+    // },
+    // {
+    //   Header: "Gender",
+    //   accessor: "gender",
+    //   Cell: ({
+    //     value: initialValue,
+    //     row: { index },
+    //     column: { id },
+    //     updateMyData,
+    //   }) => {
+    //     const onItemClick = (value) => {
+    //       console.log("value", value);
+    //       updateMyData(index, id, value);
+    //     };
 
-        return (
-          <DropDown
-            options={[
-              { label: "Male", value: "male" },
-              { label: "Female", value: "female" },
-            ]}
-            title={"Select Gender"}
-            selectedValue={initialValue}
-            onItemClick={onItemClick}
-          />
-        );
-      },
-    },
-    {
-      Header: "Phone",
-      accessor: "phone",
-      Cell: EditableCell,
-    },
+    //     return (
+    //       <DropDown
+    //         options={[
+    //           { label: "Male", value: "male" },
+    //           { label: "Female", value: "female" },
+    //         ]}
+    //         title={"Select Gender"}
+    //         selectedValue={initialValue}
+    //         onItemClick={onItemClick}
+    //       />
+    //     );
+    //   },
+    // },
+    // {
+    //   Header: "Phone",
+    //   accessor: "phone",
+    //   Cell: EditableCell,
+    // },
   ];
 
-  columns.push({
-    Header: "salam",
-    accessor: "salam",
-    Cell: EditableCell,
-  })
+  for (let i = 0; i < colNames.length; i++) {
+    columns.push({
+      Header: colNames[i],
+      accessor: colNames[i],
+      Cell: EditableCell,
+    })
+  }
+ 
 
   const updateMyData = (rowIndex, columnId, value) => {
     // We also turn on the flag to not reset the page
@@ -135,7 +139,7 @@ function App() {
           (!hiddenElements ? (<Searchbar onChange={onSearchbarChange} />) : null)
         }
       </div>
-      <Columns style={{ textAlign: 'center' }} />
+      <Columns colHidden={setHiddenElements} setColumns={setColNames} style={{ textAlign: 'center' }} />
       <button hidden={hiddenElements}
         onClick={onAddRowClick}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
