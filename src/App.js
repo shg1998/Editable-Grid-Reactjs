@@ -6,24 +6,18 @@ import EditableCell from "./components/EditableCell";
 import Columns from "./components/Columns";
 // import columns from "./data";
 
-
-
-
-
-
-
 function App() {
 
-  const [rowdata, setRowData] = useState([]);
+  const [rowdata, setRowData] = useState([{ username: "", email: "", gender: "", phone: "" }]);
   const [filteredData, setFilteredData] = useState([]);
   const [skipPageReset, setSkipPageReset] = useState(false);
   const [hiddenElements, setHiddenElements] = useState(true);
   const [colNames, setColNames] = useState([]);
- 
+
 
   useEffect(() => {
     setSkipPageReset(false);
-    
+
   }, [rowdata]);
 
   const onItemClick = (e) => {
@@ -114,7 +108,7 @@ function App() {
       Cell: EditableCell,
     })
   }
- 
+
 
   const updateMyData = (rowIndex, columnId, value) => {
     // We also turn on the flag to not reset the page
@@ -133,19 +127,28 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto" >
       <div className="flex justify-center mt-8">
         {
           (!hiddenElements ? (<Searchbar onChange={onSearchbarChange} />) : null)
         }
       </div>
-      <Columns colHidden={setHiddenElements} setColumns={setColNames} style={{ textAlign: 'center' }} />
+      {
+        (hiddenElements ? (<Columns colHidden={setHiddenElements} setColumns={setColNames} style={{ textAlign: 'center' }} />) : null)
+      }
       <button hidden={hiddenElements}
         onClick={onAddRowClick}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        className={"btn btn-success"}>
         Add Row
       </button>
-      
+
+      <button hidden={hiddenElements}
+        onClick={()=>setHiddenElements(true)}
+        style={{marginLeft:'1rem'}}
+        className={"btn btn-warning"}>
+        Edit columns
+      </button>
+
       <div className="flex justify-center mt-8" >
         {
           (!hiddenElements ? (<Table
